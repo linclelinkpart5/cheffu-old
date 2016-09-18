@@ -1,0 +1,90 @@
+FILE                            ::= RECIPE
+
+RECIPE                          ::= GENERAL_OPERAND
+
+GENERAL_OPERAND                 ::= SIMPLE_OPERAND
+                                ::= GENERAL_OPERAND SIMPLE_UNARY_OPERATOR
+                                ::= GENERAL_OPERAND GENERAL_OPERAND SIMPLE_BINARY_OPERATOR
+                                ::= VARIANT_OPERAND
+
+GENERAL_BINARY_OPERATOR         ::= SIMPLE_BINARY_OPERATOR
+                                ::= VARIANT_BINARY_OPERATOR
+
+GENERAL_UNARY_OPERATOR          ::= SIMPLE_UNARY_OPERATOR
+                                ::= VARIANT_UNARY_OPERATOR
+
+VARIANT_OPERAND                 ::= VARIANT_LIST_START_SIGIL GENERAL_OPERAND (VARIANT_LIST)? (VARIANT_LIST_SEPARATOR GENERAL_OPERAND (VARIANT_LIST)?)+ VARIANT_LIST_CLOSE_SIGIL
+
+VARIANT_BINARY_OPERATOR         ::= VARIANT_LIST_START_SIGIL GENERAL_BINARY_OPERATOR (VARIANT_LIST)? (VARIANT_LIST_SEPARATOR GENERAL_BINARY_OPERATOR (VARIANT_LIST)?)+ VARIANT_LIST_CLOSE_SIGIL
+
+VARIANT_UNARY_OPERATOR          ::= VARIANT_LIST_START_SIGIL GENERAL_UNARY_OPERATOR (VARIANT_LIST)? (VARIANT_LIST_SEPARATOR GENERAL_UNARY_OPERATOR (VARIANT_LIST)?)+ VARIANT_LIST_CLOSE_SIGIL
+
+VARIANT_LIST                    ::= VARIANT_TAG_LIST_START_SIGIL INTEGER (VARIANT_TAG_LIST_SEPARATOR INTEGER)*
+
+SIMPLE_OPERAND                  ::= INGREDIENT_SIGIL (PSEUDO_INGREDIENT_SIGIL)? SENTENCE
+
+SIMPLE_UNARY_OPERATOR           ::= UNARY_OP_SIGIL (SIMULTANEOUS_OP_SIGIL)? SENTENCE
+
+SIMPLE_BINARY_OPERATOR          ::= BINARY_OP_SIGIL (SIMULTANEOUS_OP_SIGIL)? SENTENCE
+
+SENTENCE                        ::= PHRASE (MODIFIER)* (ANNOTATION)*
+
+MODIFIER                        ::= MODIFIER_SIGIL STRING
+
+ANNOTATION                      ::= ANNOTATION_SIGIL STRING
+
+STRING                          ::= (STRING_CHAR)+
+
+PHRASE                          ::= (PHRASE_CHAR)+
+
+STRING_CHAR                     ::= PHRASE_CHAR
+                                ::= DIGIT
+                                ::= "["
+                                ::= "]"
+                                ::= "#"
+
+PHRASE_CHAR                     ::= LETTER
+                                ::= "-"
+                                ::= """
+                                ::= "'"
+                                ::= " "
+
+LETTER                          ::= /[A-Za-z]/
+
+INTEGER                         ::= NZ_DIGIT (DIGIT)*
+
+DIGIT                           ::= "0"
+                                ::= NZ_DIGIT
+
+NZ_DIGIT                        ::= /[1-9]/
+
+MODIFIER_SIGIL                  ::= ","
+
+ANNOTATION_SIGIL                ::= ";"
+
+VARIANT_TAG_LIST_START_SIGIL    ::= "#"
+
+VARIANT_TAG_LIST_SEPARATOR      ::= ","
+
+VARIANT_LIST_START_SIGIL        ::= "["
+
+VARIANT_LIST_SEPARATOR          ::= "|"
+
+VARIANT_LIST_CLOSE_SIGIL        ::= "]"
+
+INGREDIENT_SIGIL                ::= "*"
+
+PSEUDO_INGREDIENT_SIGIL         ::= ":"
+
+SIMULTANEOUS_OP_SIGIL           ::= "+"
+
+UNARY_OP_SIGIL                  ::= "="
+
+BINARY_OP_SIGIL                 ::= "/"
+
+# Eliminating left-recursion
+GENERAL_OPERAND                 ::= SIMPLE_OPERAND G'
+GENERAL_OPERAND                 ::= VARIANT_OPERAND G'
+G'                              ::= GENERAL_UNARY_OPERATOR G'
+G'                              ::= GENERAL_OPERAND GENERAL_BINARY_OPERATOR G'
+G                               ::= <nil>
