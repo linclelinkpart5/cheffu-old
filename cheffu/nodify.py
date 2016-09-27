@@ -4,25 +4,28 @@ class CheffuNodifyError(Exception):
     pass
 
 class Node:
-    def __init__(self, sigil, flags, name, modifiers, annotations, *child_nodes):
+    def __init__(self, sigil, flags, data, modifiers, annotations, *child_nodes):
         self.sigil = sigil
         self.flags = flags
-        self.name = name
+        self.data = data
         self.modifiers = tuple(modifiers)
         self.annotations = tuple(annotations)
         self.child_nodes = tuple(child_nodes)
 
     def __str__(self):
-        s = "{} {} {} {} {}\n".format(self.sigil, self.flags, self.name, self.modifiers, self.annotations)
+        s = "{} {} {} {} {}\n".format(self.sigil, self.flags, self.data, self.modifiers, self.annotations)
         for c in self.child_nodes:
             s = s + "\t{}".format(c)
 
         return s
 
+    def value(self):
+        return self.sigil, self.flags, self.data, self.modifiers, self.annotations
+
 def nodify(tokens):
     stack = []
 
-    for sigil, flags, name, modifiers, annotations in tokens:
+    for sigil, flags, data, modifiers, annotations in tokens:
         if sigil == c.OPERAND_SIGIL:
             children = ()
         elif sigil == c.UNARY_OP_SIGIL:
@@ -40,7 +43,7 @@ def nodify(tokens):
         else:
             raise CheffuNodifyError("Unknown sigil")
 
-        new_item = Node(sigil, flags, name, modifiers, annotations, *children)
+        new_item = Node(sigil, flags, data, modifiers, annotations, *children)
         stack.append(new_item)
 
     if len(stack) != 1:
