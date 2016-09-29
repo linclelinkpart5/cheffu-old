@@ -8,10 +8,19 @@ from modgrammar import (
     OR,
     EMPTY,
 )
+from fractions import Fraction
 
 import cheffu.constants as c
 
 grammar_whitespace_mode = 'optional'
+
+class NonNegInteger(Grammar):
+    grammar =   (
+                    WORD(c.DIGIT_CHARS),
+                )
+
+    def value(self):
+        return int(self.string)
 
 class String(Grammar):
     grammar =   (
@@ -47,7 +56,7 @@ class Annotation(Grammar):
     def value(self):
         return self[1].value()
 
-class Ingredient(Grammar):
+class Sentence(Grammar):
     grammar =   (
                     Phrase,
                     ZERO_OR_MORE(Modifier),
@@ -55,56 +64,53 @@ class Ingredient(Grammar):
                 )
 
     def value(self):
-        return self[0].value(), [m.value() for m in self[1]], [a.value() for a in self[2]]
-
-class Directive(Grammar):
-    grammar =   (
-                    Phrase,
-                    ZERO_OR_MORE(Modifier),
-                    ZERO_OR_MORE(Annotation),
-                )
-
-    def value(self):
-        return self[0].value(), [m.value() for m in self[1]], [a.value() for a in self[2]]
+        return  {
+                    'name': self[0].value(),
+                    'modifiers': [s.value() for s in self[1]],
+                    'annotations': [s.value() for s in self[2]],
+                }
 
 class Operand(Grammar):
     grammar =   (
                     c.OPERAND_SIGIL,
                     OPTIONAL(c.PSEUDO_OPERAND_FLAG),
-                    Ingredient,
+                    Sentence,
                 )
 
     def value(self):
-        sigil = self[0].string
-        sigil_flags = { 'pseudo': True if self[1] else False }
-        data, modifiers, annotations = self[2].value()
-        return sigil, sigil_flags, data, modifiers, annotations
+        return  {
+                    'sigil': self[0].string,
+                    'pseudo': True if self[1] else False,
+                    **self[2].value(),
+                }
 
 class UnaryOp(Grammar):
     grammar =   (
                     c.UNARY_OP_SIGIL,
                     OPTIONAL(c.SIMULTANEOUS_OP_FLAG),
-                    Directive,
+                    Sentence,
                 )
 
     def value(self):
-        sigil = self[0].string
-        sigil_flags = { 'simultaneous': True if self[1] else False }
-        data, modifiers, annotations = self[2].value()
-        return sigil, sigil_flags, data, modifiers, annotations
+        return  {
+                    'sigil': self[0].string,
+                    'simultaneous': True if self[1] else False,
+                    **self[2].value(),
+                }
 
 class BinaryOp(Grammar):
     grammar =   (
                     c.BINARY_OP_SIGIL,
                     OPTIONAL(c.SIMULTANEOUS_OP_FLAG),
-                    Directive,
+                    Sentence,
                 )
 
     def value(self):
-        sigil = self[0].string
-        sigil_flags = { 'simultaneous': True if self[1] else False }
-        data, modifiers, annotations = self[2].value()
-        return sigil, sigil_flags, data, modifiers, annotations
+        return  {
+                    'sigil': self[0].string,
+                    'simultaneous': True if self[1] else False,
+                    **self[2].value(),
+                }
 
 class Token(Grammar):
     grammar =   (
