@@ -9,6 +9,7 @@ from modgrammar import (
     EMPTY,
 )
 from fractions import Fraction
+import uuid
 
 import cheffu.constants as c
 
@@ -70,6 +71,17 @@ class Sentence(Grammar):
                     'annotations': [s.value() for s in self[2]],
                 }
 
+class Partition(Grammar):
+    grammar =   (
+                    ONE_OR_MORE(c.PARTITION_A_PORTION_FLAG),
+                    ONE_OR_MORE(c.PARTITION_B_PORTION_FLAG),
+                )
+
+    def value(self):
+        num = len(self[0].string)
+        den = len(self.string)
+        return Fraction(num, den)
+
 class Operand(Grammar):
     grammar =   (
                     c.OPERAND_SIGIL,
@@ -112,17 +124,46 @@ class BinaryOp(Grammar):
                     **self[2].value(),
                 }
 
+class PartitionOp(Grammar):
+    grammar =   (
+                    c.PARTITION_OP_SIGIL,
+                    Partition,
+                )
+
+    def value(self):
+        return  {
+                    'sigil': self[0].string,
+                    'fraction': self[1].value(),
+                }
+
+class StoredOperand(Grammar):
+    grammar =   (
+                    c.STORED_OPERAND_SIGIL,
+                    NonNegInteger,
+                )
+
+    def value(self):
+        return  {
+                    'sigil': self[0].string,
+                    'key': self[1].value(),
+                }
+
 class Token(Grammar):
     grammar =   (
                     OR(
                         Operand,
                         UnaryOp,
                         BinaryOp,
+                        PartitionOp,
+                        StoredOperand,
                     ),
                 )
 
     def value(self):
-        return self[0].value()
+        return  {
+                    **self[0].value(),
+                    'uuid': uuid.uuid4(),
+                }
 
 class Recipe(Grammar):
     grammar =   (

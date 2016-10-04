@@ -1,16 +1,21 @@
 * water =boil
-* chamomile tea /add =steep, for 8-10 minutes =squeeze liquid =cool =reserve half
+* chamomile tea /add =steep, for 8-10 minutes =squeeze liquid =cool
+< %_
+< %%_
+< %_
 * flour, all-purpose
 * baking powder /combine
 * salt /combine
+< %%_
+< %_
 * butter
 * sugar /combine
 * lemon zest /beat, until light and fluffy
-* eggs /beat in, one at a time /beat in, one-third /beat in, one-third
-*: one-third of flour mixture /beat in
-*: one-third of reserved chamomile tea /beat in
-*: one-third of flour mixture /beat in
-*: one-third of reserved chamomile tea /beat in =scrape down
+* eggs /beat in /beat in /beat in
+> 3 /beat in
+> 1 /beat in
+> 4 /beat in
+> 2 /beat in =scrape down
 * vanilla /combine =pour into prepared pan =bake, 350 degrees F, 50-60 minutes =cool, 15 minutes =remove from pan =cool, 60 minutes =poke holes
 * honey
-*: reserved chamomile tea /combine =boil, 5 minutes =cool /pour over
+> 0 /combine =boil, 5 minutes =cool /pour over
