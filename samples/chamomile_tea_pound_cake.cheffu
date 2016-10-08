@@ -1,21 +1,21 @@
 * water =boil
-* chamomile tea /add =steep, for 8-10 minutes =squeeze liquid =cool
+* chamomile tea \add =steep, for 8-10 minutes =squeeze liquid =cool
 < %_
 < %%_
 < %_
 * flour, all-purpose
-* baking powder /combine
-* salt /combine
+* baking powder \combine
+* salt \combine
 < %%_
 < %_
 * butter
-* sugar /combine
-* lemon zest /beat, until light and fluffy
-* eggs /beat in /beat in /beat in
-> 3 /beat in
-> 1 /beat in
-> 4 /beat in
-> 2 /beat in =scrape down
-* vanilla /combine =pour into prepared pan =bake, 350 degrees F, 50-60 minutes =cool, 15 minutes =remove from pan =cool, 60 minutes =poke holes
+* sugar \combine
+* lemon zest \beat, until light and fluffy
+* eggs @ 3 whole \beat in \beat in \beat in
+> 3 \beat in
+> 1 \beat in
+> 4 \beat in
+> 2 \beat in =scrape down
+* vanilla \combine =pour into prepared pan =bake, 350 degrees F, 50-60 minutes =cool, 15 minutes =remove from pan =cool, 60 minutes =poke holes
 * honey
-> 0 /combine =boil, 5 minutes =cool /pour over
+> 0 \combine =boil, 5 minutes =cool \pour over

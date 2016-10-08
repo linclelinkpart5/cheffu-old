@@ -18,7 +18,7 @@ if __name__ == "__main__":
                             action='store_true',
                             help='if specified, outputs a diagram of the recipe',
                             )
-    arg_parser.add_argument('--diagram_file_path',
+    arg_parser.add_argument('--diagram-file-path',
                             metavar='DIAGRAM FILE PATH',
                             type=Path,
                             default=Path('./recipe.png'),

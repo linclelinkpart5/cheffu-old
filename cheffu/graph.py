@@ -13,6 +13,18 @@ NODE_BOX_SHAPES =   {
                         c.PARTITION_OP_SIGIL:   'plain',
                     }
 
+def format_amount(operand_dict):
+    if 'quantity' in operand_dict:
+        quantity = operand_dict['quantity']
+        range_ = operand_dict.get('range', 0)
+        units = operand_dict.get('units', 'count')
+        if range_ != 0:
+            return "{}-{} {}".format(quantity, quantity + range_, units)
+        else:
+            return "{} {}".format(quantity, units)
+    else:
+        return ""
+
 def generate_graph(token_tree_root):
     graph = Dot(graph_type='digraph', strict=True)
 
@@ -26,10 +38,13 @@ def generate_graph(token_tree_root):
         # Generate a label
         label = token_tree.get('name', 'UNKNOWN')
 
+        # Generate a string for amounts
+        amount = format_amount(token_tree)
+
         # Determine the graph box shape
         shape = NODE_BOX_SHAPES.get(sigil, 'plaintext')
 
-        node = Node(str(token_tree['uuid']), label=label, shape=shape)
+        node = Node(str(token_tree['uuid']), label="\n".join([label, amount]), shape=shape)
 
         # Build edges from each input to this graph node
         edges = [Edge(input_node, node, label=str(token_tree['inputs'][i].get('fraction', " "))) for i, input_node in enumerate(input_nodes)]
