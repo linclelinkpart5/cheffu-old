@@ -93,8 +93,8 @@ class Sentence(Grammar):
     def value(self):
         return  {
                     'name': self[0].value(),
-                    'modifiers': [s.value() for s in self[1]],
-                    'annotations': [s.value() for s in self[2]],
+                    'modifiers': frozenset([s.value() for s in self[1]]),
+                    'annotations': frozenset([s.value() for s in self[2]]),
                 }
 
 class Partition(Grammar):

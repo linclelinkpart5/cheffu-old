@@ -6,6 +6,7 @@ from cheffu.tokenize import tokenize
 from cheffu.validate import validate
 from cheffu.graph import generate_graph
 from cheffu.shopping_list import shopping_list
+from cheffu.format import format_standard
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(description='Parses recipe files written in Cheffu')
@@ -36,4 +37,4 @@ if __name__ == "__main__":
             graph = generate_graph(token_tree)
             graph.write_png(str(args.diagram_file_path))
 
-        print(shopping_list(token_tree))
+        print(sorted(format_standard(token_tree), key=lambda x: x[0]))
