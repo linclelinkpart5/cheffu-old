@@ -31,10 +31,14 @@ if __name__ == "__main__":
     with args.recipe_file_path.open() as recipe_file:
         recipe_text = recipe_file.read()
         tokens = tokenize(recipe_text)
-        token_tree = validate(tokens)
+        #token_tree = validate(tokens)
+        recipe_dict, start_key = validate(tokens)
+
+        from pprint import pprint
+        pprint(shopping_list(recipe_dict))
 
         if args.output_diagram:
-            graph = generate_graph(token_tree)
+            graph = generate_graph(recipe_dict, start_key)
             graph.write_png(str(args.diagram_file_path))
 
-        print(sorted(format_standard(token_tree), key=lambda x: x[0]))
+        # print(sorted(format_standard(token_tree), key=lambda x: x[0]))

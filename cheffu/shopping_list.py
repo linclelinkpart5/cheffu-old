@@ -1,20 +1,34 @@
 import cheffu.constants as c
 
-def shopping_list(token_tree_root):
-    def recurse(token_tree):
-        # Process inputs recursively
-        input_results = []
-        if 'inputs' in token_tree:
-            for i in token_tree['inputs']:
-                input_results.extend(recurse(i))
+from collections import defaultdict
 
-        # Find out what kind of token this is
-        sigil = token_tree['sigil']
+def shopping_list(recipe_dict):
+    operand_tokens = list(filter(lambda x: x['sigil'] == c.OPERAND_SIGIL and not x['pseudo'], recipe_dict.values()))
 
-        # We only care about ingredients
-        if sigil == c.OPERAND_SIGIL and 'name' in token_tree:
-            return input_results + [token_tree['name']]
+    amount_dict = defaultdict(lambda: { 'quantity': 0, 'range': 0, 'a_approx': False, 'b_approx': False })
+    unspecified_set = set()
+
+    for operand_token in operand_tokens:
+        name = operand_token['name']
+        modifiers = operand_token['modifiers']
+        key = (name, modifiers)
+
+        amount = operand_token['amount']
+
+        if amount:
+            units = amount['units']
+            unit_key = (*key, units)
+
+            quantity    = amount['quantity']
+            range_      = amount['range']
+            a_approx    = amount['a_approx']
+            b_approx    = amount['b_approx']
+
+            amount_dict[unit_key]['quantity'] += quantity
+            amount_dict[unit_key]['range'] += range_
+            amount_dict[unit_key]['a_approx'] = amount_dict[unit_key]['a_approx'] or a_approx
+            amount_dict[unit_key]['b_approx'] = amount_dict[unit_key]['b_approx'] or b_approx
         else:
-            return input_results
+            unspecified_set.add(key)
 
-    return set(recurse(token_tree_root))
+    return amount_dict

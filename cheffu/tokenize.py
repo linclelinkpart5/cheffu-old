@@ -173,7 +173,7 @@ class Operand(Grammar):
                     'sigil': self[0].string,
                     'pseudo': True if self[1] else False,
                     **self[2].value(),
-                    **(self[3].value() if self[3] else {}),
+                    'amount': self[3].value() if self[3] else {},
                 }
 
 class UnaryOp(Grammar):
@@ -242,7 +242,7 @@ class Token(Grammar):
     def value(self):
         return  {
                     **self[0].value(),
-                    'uuid': uuid.uuid4(),
+#                    'uuid': uuid.uuid4(),
                 }
 
 class Recipe(Grammar):
