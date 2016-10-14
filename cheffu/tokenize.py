@@ -242,7 +242,6 @@ class Token(Grammar):
     def value(self):
         return  {
                     **self[0].value(),
-#                    'uuid': uuid.uuid4(),
                 }
 
 class Recipe(Grammar):

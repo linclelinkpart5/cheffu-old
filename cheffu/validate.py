@@ -1,4 +1,5 @@
 import cheffu.constants as c
+import uuid
 from copy import (
     copy,
     deepcopy,
@@ -14,7 +15,6 @@ def validate(tokens):
     recipe_dict = {}
     index = count()
 
-    import uuid
     def add_to_dict(token):
         id_ = uuid.uuid4()
         token['index'] = next(index)
@@ -48,7 +48,7 @@ def validate(tokens):
         input_id = operand_stack.pop()
 
         token['inputs'] = [input_id]
-        token['name'] = 'PARTITION_OP_PASSTHROUGH'
+        # token['name'] = 'PARTITION_OP_PASSTHROUGH'
         stored_token = deepcopy(token)
         stored_token['fraction'] = 1 - stored_token['fraction']
         stored_id = add_to_dict(stored_token)
@@ -70,7 +70,7 @@ def validate(tokens):
             raise CheffuValidateError("Expected an operand in stored memory at index {}, but element did not exist".format(key))
 
         token['inputs'] = [retrieved_id]
-        token['name'] = 'STORED_OPERAND_PASSTHROUGH'
+        # token['name'] = 'STORED_OPERAND_PASSTHROUGH'
 
         return add_to_dict(token)
 
