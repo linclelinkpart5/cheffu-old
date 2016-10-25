@@ -17,6 +17,7 @@ PARTITION_B_PORTION_FLAG        =   '_'
 
 STORED_OPERAND_SIGIL            =   '>'
 
+MIXED_NUM_SEPARATOR             =   '_'
 FRACTION_SEPARATOR              =   '/'
 DECIMAL_SEPARATOR               =   '.'
 

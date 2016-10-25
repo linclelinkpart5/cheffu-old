@@ -5,6 +5,8 @@ from modgrammar import (
     OPTIONAL,
     ONE_OR_MORE,
     OR,
+    GRAMMAR,
+    SPACE,
 )
 from fractions import Fraction
 import uuid
@@ -30,14 +32,22 @@ class PosInteger(Grammar):
         return int(self.string)
 
 class PosFraction(Grammar):
+    grammar_whitespace_mode = 'explicit'
+
     grammar =   (
+                    OPTIONAL(
+                        GRAMMAR(
+                            PosInteger,
+                            c.MIXED_NUM_SEPARATOR,
+                        ),
+                    ),
                     PosInteger,
                     c.FRACTION_SEPARATOR,
                     PosInteger,
                 )
 
     def value(self):
-        return Fraction(self[0].value(), self[2].value())
+        return (self[0][0].value() if self[0] else 0) + Fraction(self[1].value(), self[3].value())
 
 class PosDecimal(Grammar):
     grammar =   (
@@ -111,9 +121,9 @@ class Partition(Grammar):
 class PosNumber(Grammar):
     grammar =   (
                     OR(
-                        PosInteger,
                         PosFraction,
                         PosDecimal,
+                        PosInteger,
                     ),
                 )
 

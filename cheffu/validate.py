@@ -46,11 +46,15 @@ def validate(tokens):
             raise CheffuValidateError("Expected at least one operand on stack, found {}".format(len(operand_stack)))
 
         input_id = operand_stack.pop()
+        input_operand_token = recipe_dict[input_id]
 
         token['inputs'] = [input_id]
-        # token['name'] = 'PARTITION_OP_PASSTHROUGH'
         stored_token = deepcopy(token)
-        stored_token['fraction'] = 1 - stored_token['fraction']
+        stored_token['fraction'] = 1 - token['fraction']
+
+        token['adjusted_fraction'] = input_operand_token.get('adjusted_fraction', 1) * token['fraction']
+        stored_token['adjusted_fraction'] = input_operand_token.get('adjusted_fraction', 1) * stored_token['fraction']
+
         stored_id = add_to_dict(stored_token)
 
         stored_mem.append(stored_id)
@@ -70,7 +74,6 @@ def validate(tokens):
             raise CheffuValidateError("Expected an operand in stored memory at index {}, but element did not exist".format(key))
 
         token['inputs'] = [retrieved_id]
-        # token['name'] = 'STORED_OPERAND_PASSTHROUGH'
 
         return add_to_dict(token)
 
